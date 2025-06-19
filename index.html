@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simon Hildell | Portfolio</title>
+  <style>
+  #contact a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #contact a:hover {
+    text-decoration: underline;
+  }
+</style>
+  <style>
+    :root {
+      --header-height: 64px;
+    }
+
+    body {
+      margin: 0;
+      background: #fff;
+      color: #000;
+      font-family: Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    body.dark {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    header {
+      height: var(--header-height);
+      background: #f5f5f5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      font-weight: 600;
+      font-size: 1.4rem;
+      user-select: none;
+    }
+
+    body.dark header {
+      background-color: #1e1e1e;
+    }
+
+    header .name {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    header nav button {
+      background: none;
+      border: none;
+      color: #333;
+      margin: 0 0.6rem;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.3rem 0;
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.3s;
+    }
+
+    header nav button.active {
+      border-color: #000;
+      color: #000;
+    }
+
+    body.dark header button {
+      color: #aaa;
+    }
+
+    body.dark header button.active {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: #000;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark #theme-toggle {
+      background: #fff;
+    }
+
+    main {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    section {
+      display: none;
+      height: calc(100vh - var(--header-height));
+      overflow: auto;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    #canvas-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #spinner {
+      width: 80%;
+      aspect-ratio: 3 / 2;
+      background: #eee;
+      border-radius: 12px;
+      cursor: grab;
+      display: block;
+    }
+
+    #model-toggle {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #model-toggle button {
+      background: #ddd;
+      border: none;
+      color: #333;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #model-toggle button.active,
+    #model-toggle button:hover {
+      background: #bbb;
+    }
+
+    #scale-controls {
+      margin-top: 1rem;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    #scale-controls button {
+      padding: 6px 14px;
+      font-size: 1rem;
+      background: #ddd;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #scale-controls button:hover {
+      background: #bbb;
+    }
+
+    #pdf-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+    }
+
+    #pdf-controls {
+      margin: 0.5rem;
+    }
+
+    #pdf-controls button {
+      font-size: 1.2rem;
+      margin: 0 1rem;
+      padding: 6px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #ccc;
+      cursor: pointer;
+    }
+
+    #pdf-canvas {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      max-width: 90vw;
+      height: auto;
+    }
+
+    #about, #contact {
+      max-width: 600px;
+      margin: 2rem auto;
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+    
+    
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.111/pdf.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="name">Simon Hildell</div>
+    <nav>
+      <button id="tab-start" class="active">Start</button>
+      <button id="tab-about">About</button>
+      <button id="tab-portfolio">Portfolio</button>
+      <button id="tab-contact">Contact</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="start" class="active">
+      <div id="canvas-container">
+        <canvas id="spinner"></canvas>
+        <div id="scale-controls">
+          <button id="zoom-in">+</button>
+          <button id="zoom-out">−</button>
+          <button id="reset-zoom">Reset</button>
+        </div>
+        <div id="model-toggle">
+          <button class="model-btn active" data-model="lissajous">Lissajous</button>
+          <button class="model-btn" data-model="torusknot">Torus Knot</button>
+          <button class="model-btn" data-model="distorted">Sphere</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <h1>About Me</h1>
+      <p>Hi, I'm Simon Hildell, an architecture student with a passion for parametric, computational, and mathematical modeling. I have a bachelors from Umeå School of Architecture and will go on to do a masters in digital architecture from Lund University.</p>
+      <p>I am very curious and love to delve deep into complex problems and really understand the logic behind things.  </p>
+      <img src="Jag3.jpg" alt="Description" style="display: block; margin: 0 auto; max-width: 65%; height: auto;">
+    </section>
+
+    <section id="portfolio">
+      <div id="pdf-container">
+        <canvas id="pdf-canvas"></canvas>
+        <div id="pdf-controls">
+          <button id="prev-page">&larr; Prev</button>
+          <span id="page-num">1</span>/<span id="page-count">?</span>
+          <button id="next-page">Next &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h1>Contact</h1>
+      <p>Email: simon@hildell.com</p>
+      <p>Phone: +46 70 896 36 05</p>
+        <p>
+    <a href="https://www.instagram.com/simonhildellworks" target="_blank">Instagram</a> |
+    <a href="https://www.linkedin.com/in/simon-hildell-19b078107" target="_blank">LinkedIn</a>
+  </p>
+      <h1>Let's connect!</h1>
+    </section>
+  </main>
+
+  <button id="theme-toggle" aria-label="Toggle theme"></button>
+
+  <script>
+    const tabs = { start, about, portfolio, contact };
+    const tabButtons = {
+      start: document.getElementById('tab-start'),
+      about: document.getElementById('tab-about'),
+      portfolio: document.getElementById('tab-portfolio'),
+      contact: document.getElementById('tab-contact')
+    };
+
+    function setActiveTab(tabName) {
+      for (const key in tabs) {
+        tabs[key].classList.toggle('active', key === tabName);
+        tabButtons[key].classList.toggle('active', key === tabName);
+      }
+      if (tabName === 'portfolio') renderPage(currentPage);
+    }
+
+    for (const key in tabButtons) {
+      tabButtons[key].addEventListener('click', () => setActiveTab(key));
+    }
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+    });
+
+    const canvas = document.getElementById('spinner');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+
+    let mesh;
+    let initialZoom = 4;
+    camera.position.z = initialZoom;
+
+    function resizeCanvas() {
+      const width = canvas.clientWidth * 0.5;
+      const height = width * 2 / 3;
+      canvas.width = width;
+      canvas.height = height;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function createLissajous() {
+      const curve = new THREE.Curve();
+      curve.getPoint = t => new THREE.Vector3(
+        Math.sin(3 * t * Math.PI * 2),
+        Math.sin(2 * t * Math.PI * 2),
+        Math.sin(4 * t * Math.PI * 2)
+      );
+      const geometry = new THREE.TubeGeometry(curve, 200, 0.05, 8, true);
+      return new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
+    }
+
+    function createTorusKnot() {
+      return new THREE.Mesh(
+        new THREE.TorusKnotGeometry(1, 0.3, 100, 16),
+        new THREE.MeshNormalMaterial()
+      );
+    }
+
+    function createDistortedSphere() {
+      const geometry = new THREE.IcosahedronGeometry(1.2, 5);
+      const pos = geometry.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+        const scale = 1 + 0.3 * Math.sin(Math.sqrt(x*x + y*y + z*z) * 5);
+        pos.setXYZ(i, x * scale, y * scale, z * scale);
+      }
+      geometry.computeVertexNormals();
+      return new THREE.Mesh(geometry, new THREE.MeshNormalMaterial());
+    }
+
+    function switchModel(type) {
+      if (mesh) scene.remove(mesh);
+      mesh = type === 'lissajous' ? createLissajous()
+           : type === 'torusknot' ? createTorusKnot()
+           : createDistortedSphere();
+      scene.add(mesh);
+    }
+
+    switchModel('lissajous');
+
+    let dragging = false, prevX = 0, prevY = 0;
+    let inertiaX = 0.02, inertiaY = 0.02;
+
+    canvas.addEventListener('mousedown', e => {
+      dragging = true;
+      prevX = e.clientX;
+      prevY = e.clientY;
+      canvas.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mouseup', () => {
+      dragging = false;
+      canvas.style.cursor = 'grab';
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      inertiaY = (e.clientX - prevX) * 0.01;
+      inertiaX = (e.clientY - prevY) * 0.01;
+      prevX = e.clientX;
+      prevY = e.clientY;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (mesh) {
+        mesh.rotation.x += inertiaX;
+        mesh.rotation.y += inertiaY;
+        inertiaX *= 0.78;
+        inertiaY *= 0.78;
+        if (!dragging) {
+          inertiaX += 0.002;
+          inertiaY += 0.003;
+        }
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    document.querySelectorAll('.model-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        switchModel(btn.dataset.model);
+      });
+    });
+
+    document.getElementById('zoom-in').addEventListener('click', () => {
+      camera.position.z = Math.max(1, camera.position.z - 0.5);
+    });
+
+    document.getElementById('zoom-out').addEventListener('click', () => {
+      camera.position.z += 0.5;
+    });
+
+    document.getElementById('reset-zoom').addEventListener('click', () => {
+      camera.position.z = initialZoom;
+    });
+
+    // PDF viewer
+    const url = 'portfolio.pdf';
+    const canvasPDF = document.getElementById('pdf-canvas');
+    const ctx = canvasPDF.getContext('2d');
+    let pdfDoc = null, currentPage = 1, totalPages = 0;
+
+    pdfjsLib.getDocument(url).promise.then(doc => {
+      pdfDoc = doc;
+      totalPages = doc.numPages;
+      document.getElementById('page-count').textContent = totalPages;
+      renderPage(currentPage);
+    });
+
+    function renderPage(num) {
+      pdfDoc.getPage(num).then(page => {
+        const desiredWidth = Math.min(window.innerWidth * 0.95, 1000);
+        const viewport = page.getViewport({ scale: 0.75 });
+        const scale = desiredWidth / viewport.width;
+        const scaledViewport = page.getViewport({ scale });
+
+        canvasPDF.width = scaledViewport.width;
+        canvasPDF.height = scaledViewport.height;
+        canvasPDF.style.width = scaledViewport.width + 'px';
+
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: scaledViewport
+        };
+        page.render(renderContext);
+        document.getElementById('page-num').textContent = num;
+      });
+    }
+
+    document.getElementById('prev-page').addEventListener('click', () => {
+      if (currentPage > 1) renderPage(--currentPage);
+    });
+
+    document.getElementById('next-page').addEventListener('click', () => {
+      if (currentPage < totalPages) renderPage(++currentPage);
+    });
+  </script>
+</body>
+</html>

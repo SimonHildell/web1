@@ -1,0 +1,183 @@
+/* Reset and base styles */
+body {
+  margin: 0;
+  background: #fff;
+  color: #000;
+  font-family: Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
+
+header {
+  background: #f5f5f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  font-size: 1.4rem;
+  user-select: none;
+}
+
+#site-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+header nav {
+  display: flex;
+  gap: 1.2rem;
+}
+
+header button {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  border-bottom: 3px solid transparent;
+  transition: border-color 0.3s;
+}
+
+header button.active {
+  border-color: #000;
+  color: #000;
+}
+
+header h1 {
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #007acc;
+}
+
+/* Hero Section */
+.hero {
+  max-width: 900px;
+  margin: 2rem auto 3rem;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+#canvas-container {
+  background: #e0e0e0; /* Light gray rectangle behind canvas */
+  padding: 1.2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+#spinner {
+  width: 100%;
+  height: 400px;
+  background: transparent;
+  border-radius: 12px;
+  cursor: grab;
+  display: block;
+}
+
+#model-toggle {
+  margin-top: 15px;
+  display: flex;
+  gap: 12px;
+}
+
+#model-toggle button {
+  background: #ddd;
+  border: none;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s;
+}
+
+#model-toggle button.active,
+#model-toggle button:hover {
+  background: #bbb;
+}
+
+/* Intro text */
+.intro {
+  text-align: center;
+}
+
+.intro h2 {
+  margin: 0 0 0.3rem;
+  font-weight: 600;
+  font-size: 1.8rem;
+}
+
+.intro p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Content Sections */
+section {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+section h2 {
+  font-weight: 600;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+section p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+#portfolio a {
+  color: #007acc;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+#portfolio a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  background: #f5f5f5;
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 0.9rem;
+  color: #333;
+}
